@@ -1,0 +1,109 @@
+mysql> CREATE DATABASE car2;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> USE car2;
+Database changed
+mysql> CREATE TABLE driver (
+    -> driver_id INT PRIMARY KEY,
+    -> driver_name VARCHAR(15),
+    -> driver_city VARCHAR(15),
+    -> driver_contact INT
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE car (
+    ->  car_no VARCHAR(15) PRIMARY KEY,
+    ->  driver_id INT,
+    ->  model VARCHAR(15),
+    ->  registration_year INT,
+    ->  FOREIGN KEY (driver_id) REFERENCES driver(driver_id)
+    ->  );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> INSERT INTO DRIVER (DRIVER_ID, DRIVER_NAME, DRIVER_CITY, DRIVER_CONTACT)
+    -> VALUES
+    -> (1, 'John', 'Mumbai', 12345),
+    -> (2, 'Jane', 'Nashik', 98765),
+    -> (3, 'Michael', 'Chennai', 55512),
+    -> (4, 'Emma', 'Nashik', 55598),
+    -> (5, 'David', 'Delhi', 55511);
+
+mysql> INSERT INTO CAR (CAR_NO, DRIVER_ID, MODEL, REGISTRATION_YEAR)
+    -> VALUES
+    -> ('MH-15-1234', 1, 'Maruti', 2005),
+    -> ('MH-15-2345', 2, 'Toyota', 2007),
+    -> ('MH-15-3456', 3, 'Maruti', 2005),
+    -> ('MH-15-4567', 4, 'Hyundai', 2010),
+    -> ('MH-15-5678', 5, 'Maruti', 2008);
+
+
+-- Query 1: Select driver details whose id is in between 1 to 10
+
+mysql> SELECT * FROM driver
+    -> WHERE driver_id BETWEEN 1 AND 10;
++-----------+-------------+-------------+----------------+
+| driver_id | driver_name | driver_city | driver_contact |
++-----------+-------------+-------------+----------------+
+|         1 | John        | Mumbai      |          12345 |
+|         2 | Jane        | Nashik      |          98765 |
+|         3 | Michael     | Chennai     |          55512 |
+|         4 | Emma        | Nashik      |          55598 |
+|         5 | David       | Delhi       |          55511 |
++-----------+-------------+-------------+----------------+
+
+-- Query 2: Select CAR_NO whose REGISTRATION_YEAR is 2005
+
+mysql> SELECT car_no FROM car
+    -> WHERE registration_year = 2005;
++------------+
+| car_no     |
++------------+
+| MH-15-1234 |
+| MH-15-3456 |
++------------+
+
+-- Query 3: Update REGISTRATION YEAR of cars whose model is maruti. New value should be 2010
+
+mysql> UPDATE car
+    -> SET registration_year = 2010 WHERE model = 'Maruti';
+
+-- Query 4: Delete car details whose driver id is 13
+
+mysql> DELETE FROM car
+    -> WHERE driver_id = 13;
+
+-- Query 5: Display count of drivers from Nasik city
+
+mysql> DELETE FROM car WHERE driver_id = 13;
+
+-- Query 6: Display records of all cars whose CAR_NO starts with 'MH-15'
+
+mysql> SELECT COUNT(*) FROM driver
+    -> WHERE driver_city = 'Nashik';
++----------+
+| COUNT(*) |
++----------+
+|        2 |
++----------+
+
+OR
+mysql> SELECT COUNT(*) AS Nasik_Drivers_Count FROM DRIVER WHERE DRIVER_CITY = 'Nasik';
++---------------------+
+| Nasik_Drivers_Count |
++---------------------+
+|                   0 |
++---------------------+
+
+-- Query 6: Display records of all cars whose CAR_NO starts with 'MH-15'
+
+mysql> SELECT * FROM car
+    -> WHERE car_no LIKE 'MH-15%';
++------------+-----------+---------+-------------------+
+| car_no     | driver_id | model   | registration_year |
++------------+-----------+---------+-------------------+
+| MH-15-1234 |         1 | Maruti  |              2010 |
+| MH-15-2345 |         2 | Toyota  |              2007 |
+| MH-15-3456 |         3 | Maruti  |              2010 |
+| MH-15-4567 |         4 | Hyundai |              2010 |
+| MH-15-5678 |         5 | Maruti  |              2010 |
++------------+-----------+---------+-------------------+
