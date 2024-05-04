@@ -1,0 +1,31 @@
+mysql> CREATE DATABASE company;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> USE company;
+Database changed
+
+mysql> CREATE TABLE dept (
+    -> dept_no INT PRIMARY KEY,
+    -> dept_name VARCHAR(50),
+    -> dept_manager VARCHAR(50),
+    -> dept_location INT
+    -> );
+
+mysql> CREATE TABLE emp (
+    -> emp_no INT PRIMARY KEY,
+    -> emp_name VARCHAR(50),
+    -> emp_city VARCHAR(50),
+    -> emp_dept VARCHAR(50),
+    -> emp_post VARCHAR(50),
+    -> emp_salary INT,
+    -> dept_no INT,
+    -> FOREIGN KEY ( dept_no) REFERENCES dept(dept_no)
+    -> );
+
+mysql> INSERT INTO DEPT (Dept_no, Dept_name, Dept_manager, Dept_location)
+    -> VALUES
+    -> (100, 'HR', 'John', 1)
+    -> (200, 'Finance', 'Jane', 2),
+    -> (300, 'Marketing', 'Michael', 3),
+    -> (400, 'IT', 'Emily', 4),
+    -> (500, 'Operations, 'David', 5);
