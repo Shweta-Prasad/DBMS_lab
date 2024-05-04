@@ -1,0 +1,141 @@
+
+mysql> CREATE DATABASE car1;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> USE car1;
+Database changed
+
+DRIVER TABLE-
+mysql> CREATE TABLE driver (
+    -> driver_id INT PRIMARY KEY,
+    -> driver_name VARCHAR(15) NOT NULL,
+    -> driver_city VARCHAR(15),
+    -> driver_contact VARCHAR(15) NOT NULL
+    -> );
+
+//Add a column DRIVER_AGE to the DRIVER TABLE with text data type
+mysql> ALTER TABLE driver
+    -> ADD COLUMN driver_age VARCHAR(15);
+
+//Change data type of the Driver_age to numerical
+mysql> ALTER TABLE DRIVER MODIFY COLUMN DRIVER_AGE INT;
+
+//Add two more column Driver_experiance and Driver_LicNo
+mysql> ALTER TABLE driver
+    -> ADD COLUMN driver_experience VARCHAR(15);
+
+mysql> ALTER TABLE driver
+    -> ADD COLUMN driver_licno VARCHAR(15);
+
+CAR TABLE-
+mysql> CREATE TABLE car (
+    -> car_no VARCHAR(15) PRIMARY KEY,
+    -> driver_id INT,
+    -> model VARCHAR(15),
+    -> registration_year INT,
+    -> FOREIGN KEY (driver_id) REFERENCES driver(driver_id)
+    -> );
+
+//Drop primary key constraint
+mysql> ALTER TABLE CAR DROP PRIMARY KEY;
+
+//Add primary key constraint on Car_no
+mysql> ALTER TABLE CAR
+    -> ADD CONSTRAINT car_pkey PRIMARY KEY (car_no);
+
+mysql>  ALTER TABLE CAR DROP PRIMARY KEY;
+
+mysql> ALTER TABLE CAR MODIFY COLUMN CAR_NO VARCHAR(255) PRIMARY KEY;
+
+//Add Foreign Key constraints: DRIVER_ID
+mysql> ALTER TABLE CAR
+    -> ADD CONSTRAINT fk_driver_id
+    -> FOREIGN KEY (DRIVER_ID) REFERENCES DRIVER(DRIVER_ID);
+
+//Drop a column DRIVER_CONTACT from the DRIVER table    
+mysql> ALTER TABLE driver
+    -> DROP COLUMN driver_contact;
+
+
+
+mysql> INSERT INTO driver (driver_id, driver_name, driver_city, driver_age, driver_experience, driver_licno)
+    -> VALUES (2, 'John', 'Nashik', 35, 'Professional', '1234'),
+    -> (3, 'Emily', 'Nagpur', 25, 'Intermediate', '4567');
+
+mysql> INSERT INTO car (car_no, driver_id, model, registration_year)
+    -> VALUES ( '1234', 2, 'XYZ', 2020),
+    -> ('2345', 3, 'ABC', 2019);
+
+
+//Find Driver names with Car model and Car NO he is running
+mysql> SELECT driver.driver_name, car.model, car.car_no
+    -> FROM driver
+    -> JOIN car ON driver.driver_id = car.driver_id;
++-------------+-------+--------+
+| driver_name | model | car_no |
++-------------+-------+--------+
+| John        | XYZ   | 1234   |
+| Emily       | ABC   | 2345   |
++-------------+-------+--------+
+
+//Write a procedure on above CAR table to display car models whose Regn. Year is 2020 and driver
+name is "Amol"
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE getcar(IN driver_name VARCHAR(15))
+    -> BEGIN
+    ->  SELECT car.model
+    -> FROM car
+    -> JOIN driver ON car.driver_id = driver.driver_id
+    -> WHERE car.registration_year = 2020 AND driver.driver_name = driver_name;
+    -> END//
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DELIMITER ;
+mysql> CALL getcar('John');
++-------+
+| model |
++-------+
+| XYZ   |
++-------+
+1 row in set (0.01 sec)
+
+**********************************
+mysql> SELECT * FROM driver;
++-----------+-------------+-------------+------------+-------------------+--------------+
+| driver_id | driver_name | driver_city | DRIVER_AGE | driver_experience | driver_licno |
++-----------+-------------+-------------+------------+-------------------+--------------+
+|         2 | John        | Nashik      |         35 | Professional      | 1234         |
+|         3 | Emily       | Nagpur      |         25 | Intermediate      | 4567         |
++-----------+-------------+-------------+------------+-------------------+--------------+
+
+mysql> DESCRIBE driver;
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| driver_id         | int         | NO   | PRI | NULL    |       |
+| driver_name       | varchar(15) | NO   |     | NULL    |       |
+| driver_city       | varchar(15) | YES  |     | NULL    |       |
+| DRIVER_AGE        | int         | YES  |     | NULL    |       |
+| driver_experience | varchar(15) | YES  |     | NULL    |       |
+| driver_licno      | varchar(15) | YES  |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+
+mysql> SELECT * FROM car;
++--------+-----------+-------+-------------------+
+| CAR_NO | driver_id | model | registration_year |
++--------+-----------+-------+-------------------+
+| 1234   |         2 | XYZ   |              2020 |
+| 2345   |         3 | ABC   |              2019 |
++--------+-----------+-------+-------------------+
+
+mysql> DESCRIBE car;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| CAR_NO            | varchar(255) | NO   | PRI | NULL    |       |
+| driver_id         | int          | YES  | MUL | NULL    |       |
+| model             | varchar(15)  | YES  |     | NULL    |       |
+| registration_year | int          | YES  |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+
