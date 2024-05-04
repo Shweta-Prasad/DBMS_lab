@@ -1,0 +1,112 @@
+mysql> CREATE DATABASE book2;
+
+mysql> USE book2;
+Database changed
+
+AUTHOR TABLE-
+mysql> CREATE TABLE author (
+    -> author_id INT PRIMARY KEY,
+    -> author_name VARCHAR(50) NOT NULL,
+    -> author_city VARCHAR(50) NOT NULL,
+    -> author_country VARCHAR(50) NOT NULL
+    -> );
+
+BOOK TABLE-
+mysql> CREATE TABLE book (
+    -> book_id INT PRIMARY KEY,
+    -> author_id INT,
+    -> book_title VARCHAr(50),
+    -> price INT,
+    -> publication_year INT,
+    -> FOREIGN KEY (author_id) REFERENCES author(author_id)
+    -> );
+
+mysql> INSERT INTO AUTHOR (AUTHOR_ID, AUTHOR_NAME, AUTHOR_CITY, AUTHOR_COUNTRY)
+    -> VALUES
+    -> (1, 'John', 'New York', 'USA'),
+    -> (2, 'Jane', 'London', 'UK'),
+    -> (3, 'Raj ', 'Mumbai', 'India'),
+    -> (4, 'Maria', 'Pune', 'India'),
+    -> (5, 'Yuki', 'Tokyo', 'Japan');
+
+mysql> INSERT INTO BOOK (BOOK_ID, AUTHOR_ID, BOOK_TITLE, PRICE, PUBLICATION_YEAR)
+    -> VALUES
+    -> (101, 1, 'Datastructures', 700, 2005),
+    -> (102, 2, 'OOP', 500, 2007),
+    -> (103, 3, 'Programming Basics', 200, 2005),
+    -> (104, 4, 'Database Management System', 800, 2010),
+    -> (105, 5, 'Python', 300, 2003);
+    
+-- Query 1: Select author details whose country is INDIA
+
+mysql> SELECt * FROM author
+    -> WHERE author_country = 'India';
++-----------+-------------+-------------+----------------+
+| author_id | author_name | author_city | author_country |
++-----------+-------------+-------------+----------------+
+|         3 | Raj         | Mumbai      | India          |
+|         4 | Maria       | Pune        | India          |
++-----------+-------------+-------------+----------------+
+
+-- Query 2: Select book details whose publication year is 2005 or price is greater than 500
+
+mysql> SELECT * FROM book
+    -> WHERE publication_year = 2005 OR price > 500;
++---------+-----------+----------------------------+-------+------------------+
+| book_id | author_id | book_title                 | price | publication_year |
++---------+-----------+----------------------------+-------+------------------+
+|     101 |         1 | Datastructures             |   700 |             2005 |
+|     103 |         3 | Programming Basics         |   200 |             2005 |
+|     104 |         4 | Database Management System |   800 |             2010 |
++---------+-----------+----------------------------+-------+------------------+
+
+-- Query 3: Update price of book whose price is in between 700 to 999. New value should be 1000
+
+mysql> UPDATE book
+    -> SET price = 1000 WHERE price BETWEEN 700 AND 999;
+
+-- Query 4: Delete book details whose title contains 'base'
+
+mysql> DELETE FROM book
+    -> WHERE book_title LIKE '%base%';
+
+
+mysql> SELECT * FROM book;
++---------+-----------+--------------------+-------+------------------+
+| book_id | author_id | book_title         | price | publication_year |
++---------+-----------+--------------------+-------+------------------+
+|     101 |         1 | Datastructures     |  1000 |             2005 |
+|     102 |         2 | OOP                |   500 |             2007 |
+|     103 |         3 | Programming Basics |   200 |             2005 |
+|     105 |         5 | Python             |   300 |             2003 |
++---------+-----------+--------------------+-------+------------------+
+
+
+-- Query 5: Display total price of all books whose publication year is between 2000 to 2008
+
+mysql> SELECT SUM(price) AS Total_price FROM book
+    -> WHERE publication_year BETWEEN 2000 AND 2008;
++-------------+
+| Total_price |
++-------------+
+|        2000 |
++-------------+
+
+-- Query 6: Display count of author who is from India
+
+mysql> SELECT COUNT(*) FROM author
+    -> WHERE author_country = 'India';
++----------+
+| COUNT(*) |
++----------+
+|        2 |
++----------+
+
+
+mysql> SELECT COUNT(*) AS Indian_authors FROM author
+    -> WHERE author_country = 'India';
++----------------+
+| Indian_authors |
++----------------+
+|              2 |
++----------------+
