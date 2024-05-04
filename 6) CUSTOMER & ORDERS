@@ -1,0 +1,103 @@
+mysql> CREATE DATABASE customer2;
+
+mysql> use customer2;
+Database changed
+
+mysql> CREATE TABLE customer (
+    -> cust_id INT PRIMARY KEY,
+    -> cust_name VARCHAR(50),
+    -> cust_city VARCHAR(50),
+    -> cust_contact INT
+    -> );
+    
+mysql> CREATE TABLE orders (
+    -> order_id INT PRIMARY KEY,
+    -> order_date DATE,
+    -> cust_id INT,
+    -> order_amount INT,
+    -> FOREIGN KEY (cust_id) REFERENCES customer(cust_id)
+    -> );
+
+mysql> INSERT INTO CUSTOMER (CUST_ID, CUST_NAME, CUST_CITY, CUST_CONTACT)
+    -> VALUES
+    -> (1, 'John', 'Mumbai', 56789),
+    -> (2, 'Jane', 'Pune', 89765),
+    -> (3, 'Michael', 'Chennai', 45673),
+    -> (4, 'Emma', 'Nasik', 55598),
+    -> (5, 'Chris', 'Mumbai', 55512);
+
+mysql> INSERT INTO ORDERS (ORDER_ID, ORDER_DATE, CUST_ID, ORDER_AMOUNT)
+    -> VALUES
+    -> (101, '2006-01-01', 1, 15000),
+    -> (102, '2007-02-15', 2, 20000),
+    -> (103, '2005-11-20', 3, 12000),
+    -> (104, '2008-05-10', 4, 8000),
+    -> (105, '2009-12-05', 5, 25000);
+
+
+-- Query 1: Select details of customer who has 'esh' in his name
+
+mysql> SELECT * FROM customer
+    -> WHERE cust_name LIKE '%esh%';
+Empty set (0.00 sec)
+
+-- Query 2: Select details of all orders whose order amount is greater than 10000 and order date is after 31st December 2005
+
+mysql> SELECT * FROM orders
+    -> WHERE order_amount > 10000 AND order_date > '2005-12-31';
++----------+------------+---------+--------------+
+| order_id | order_date | cust_id | order_amount |
++----------+------------+---------+--------------+
+|      101 | 2006-01-01 |       1 |        15000 |
+|      102 | 2007-02-15 |       2 |        20000 |
+|      105 | 2009-12-05 |       5 |        25000 |
++----------+------------+---------+--------------+
+
+-- Query 3: Display total amount of all orders of a customer whose id is 1
+
+mysql> SELECT SUM(order_amount) AS Total_Amount FROM orders
+    -> WHERE cust_id = 1;
++--------------+
+| Total_Amount |
++--------------+
+|        15000 |
++--------------+
+
+-- Query 4: Display count of customers whose city is Nasik
+
+mysql> SELECT COUNT(*) AS Nasik_customer_count FROM customer
+    -> WHERE cust_city = 'Nasik';
++----------------------+
+| Nasik_customer_count |
++----------------------+
+|                    1 |
++----------------------+
+
+-- Query 5: Update city of customer whose city is Mumbai. New city should be Delhi
+
+mysql> UPDATE customer
+    -> SET cust_city = 'Delhi'
+    -> WHERE cust_city = 'Mumbai';
+
+mysql> SELECT * FROM customer;
++---------+-----------+-----------+--------------+
+| cust_id | cust_name | cust_city | cust_contact |
++---------+-----------+-----------+--------------+
+|       1 | John      | Delhi     |        56789 |
+|       2 | Jane      | Pune      |        89765 |
+|       3 | Michael   | Chennai   |        45673 |
+|       4 | Emma      | Nasik     |        55598 |
+|       5 | Chris     | Delhi     |        55512 |
++---------+-----------+-----------+--------------+
+
+-- Query 6: Display name and contact number of a customer whose id is 5 or city is Pune
+
+mysql> SELECT cust_name, cust_contact FROM customer
+    -> WHERE cust_id = 5 OR cust_city = 'Pune';
++-----------+--------------+
+| cust_name | cust_contact |
++-----------+--------------+
+| Jane      |        89765 |
+| Chris     |        55512 |
++-----------+--------------+
+
