@@ -100,6 +100,31 @@ mysql> CALL getcar('John');
 +-------+
 1 row in set (0.01 sec)
 
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE get_data()
+    -> BEGIN
+    -> SELECT model FROM car WHERE registration_year = 2010;
+    -> SELECT * FROM driver WHERE driver_name = 'John';
+    -> END //
+
+mysql> DELIMITER ;
+mysql> CALL get_data();
++---------+
+| model   |
++---------+
+| Maruti  |
+| Maruti  |
+| Hyundai |
+| Maruti  |
++---------+
+4 rows in set (0.00 sec)
+
++-----------+-------------+-------------+----------------+
+| driver_id | driver_name | driver_city | driver_contact |
++-----------+-------------+-------------+----------------+
+|         1 | John        | Mumbai      |          12345 |
++-----------+-------------+-------------+----------------+
+
 **********************************
 mysql> SELECT * FROM driver;
 +-----------+-------------+-------------+------------+-------------------+--------------+
