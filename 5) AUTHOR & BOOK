@@ -110,3 +110,39 @@ mysql> SELECT COUNT(*) AS Indian_authors FROM author
 +----------------+
 |              2 |
 +----------------+
+
+
+-- Query to find author names with publication year 2006
+
+mysql> SELECT author_name
+    -> FROM author
+    -> WHERE author_id IN (
+    ->  SELECT DISTINCT author_id
+    ->  FROM book
+    ->  WHERE publication_year = 2007
+    -> );
++-------------+
+| author_name |
++-------------+
+| Jane        |
++-------------+
+
+-- Procedure to display authors from India
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE indianauthor()
+    -> BEGIN
+    ->     SELECT author_name
+    ->     FROM author
+    ->     WHERE author_country = 'India';
+    -> END//
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;
+mysql> CALL indianauthor();
++-------------+
+| author_name |
++-------------+
+| Raj         |
+| Maria       |
++-------------+
