@@ -1,0 +1,58 @@
+mysql> CREATE DATABASE bank;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> USE bank;
+Database changed
+
+mysql> CREATE TABLE Branch (
+    -> branch_id INT PRIMARY KEY,
+    -> branch_name VARCHAR(50),
+    -> branch_city VARCHAR(50),
+    -> assets INT
+    -> );
+    
+mysql> CREATE TABLE Customer (
+    -> customer_id INT PRIMARY KEY,
+    -> customer_name VARCHAR(50),
+    -> customer_street VARCHAR(50),
+    -> city VARCHAR(50)
+    -> );
+
+mysql> CREATE TABLE Account (
+    -> acc_no INT PRIMARY KEY,
+    -> customer_id INT,
+    -> branch_id INT,
+    -> balance INT,
+    -> FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+    -> FOREIGN KEY (branch_id) REFERENCES Branch(branch_id)
+    -> );
+
+mysql> INSERT INTO Customer
+    -> VALUES
+    -> (1, 'John', '123 Main Street', 'Nashik'),
+    -> (2, 'Jane', '345 Street', 'Pune'),
+    -> (3, 'Alice', '456 Street', 'Mumbai');
+
+mysql> INSERT INTO Branch
+    -> VALUES
+    -> (101, 'Main Branch', 'Nashik', 500000),
+    -> (102, 'Central Branch', 'Pune', 400000),
+    -> (103, 'Downtown Branch', 'Mumbai', 600000);
+
+mysql> INSERT INTO Account
+    -> VALUES
+    -> (1234, 1, 101, 2500),
+    -> (4567, 2, 102, 3500),
+    -> (6789, 3, 103, 2000);
+
+--1.Select customer details of those customers whose city is Nasik.
+mysql> SELECT *
+    -> FROM Customer
+    -> WHERE city = 'Nashik';
++-------------+---------------+-----------------+--------+
+| customer_id | customer_name | customer_street | city   |
++-------------+---------------+-----------------+--------+
+|           1 | John          | 123 Main Street | Nashik |
++-------------+---------------+-----------------+--------+
+
+
