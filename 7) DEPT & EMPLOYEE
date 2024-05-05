@@ -1,15 +1,22 @@
-mysql> CREATE DATABASE company;
-Query OK, 1 row affected (0.02 sec)
+mysql> CREATE DATABASE department;
 
-mysql> USE company;
+mysql> USE department;
 Database changed
 
 mysql> CREATE TABLE dept (
-    -> dept_no INT PRIMARY KEY,
-    -> dept_name VARCHAR(50),
-    -> dept_manager VARCHAR(50),
-    -> dept_location INT
+    -> Dept_no INT PRIMARY KEY,
+    -> Dept_name VARCHAR(100),
+    -> Dept_manager VARCHAR(100),
+    -> Dept_location VARCHAR(100)
     -> );
+
+mysql> INSERT INTO dept
+    -> VALUES
+    -> (1001, "HR", "John", "A-wing"),
+    -> (1002, "Finance", "Jane", "B-wing"),
+    -> (1003, "Marketing", "Michael", "C-wing"),
+    -> (1004, "IT", "Emily", "D-wing"),
+    -> (1005, "Operations", "David", "E-wing");
 
 mysql> CREATE TABLE emp (
     -> emp_no INT PRIMARY KEY,
@@ -22,10 +29,111 @@ mysql> CREATE TABLE emp (
     -> FOREIGN KEY ( dept_no) REFERENCES dept(dept_no)
     -> );
 
-mysql> INSERT INTO DEPT (Dept_no, Dept_name, Dept_manager, Dept_location)
+mysql> INSERT INTO emp
     -> VALUES
-    -> (100, 'HR', 'John', 1)
-    -> (200, 'Finance', 'Jane', 2),
-    -> (300, 'Marketing', 'Michael', 3),
-    -> (400, 'IT', 'Emily', 4),
-    -> (500, 'Operations, 'David', 5);
+    -> (101, 'Alice', 'New York', 'HR', 'Recruiter', 60000, 1001),
+    -> (102, 'Bob', 'London', 'IT', 'Developer', 55000, 1002),
+    -> (103, 'Charlie', 'Los Angeles', 'Finance', 'Accountant', 65000, 1003);
+
+
+-- Query 1: Display emp_name, department number, and department name for all employees
+
+mysql> SELECT e.Emp_name, e.Dept_no, d.Dept_name
+    -> FROM emp e
+    -> INNER JOIN dept d ON e.Dept_no = d.Dept_no;
++----------+---------+-----------+
+| Emp_name | Dept_no | Dept_name |
++----------+---------+-----------+
+| Alice    |    1001 | HR        |
+| Bob      |    1002 | Finance   |
+| Charlie  |    1003 | Marketing |
++----------+---------+-----------+
+
+-- Query 2: Display emp_name, department name, location no, and city of all employees who earn a commission
+
+mysql> SELECT e.Emp_name, d.Dept_name, d.Dept_location, e.Emp_city
+    -> FROM emp e
+    -> INNER JOIN dept d ON e.Dept_no = d.Dept_no
+    -> WHERE e.Emp_salary > 0;
++----------+-----------+---------------+-------------+
+| Emp_name | Dept_name | Dept_location | Emp_city    |
++----------+-----------+---------------+-------------+
+| Alice    | HR        | A-wing        | New York    |
+| Bob      | Finance   | B-wing        | London      |
+| Charlie  | Marketing | C-wing        | Los Angeles |
++----------+-----------+---------------+-------------+
+
+-- Query 3: Display emp_name, department name, and city of all employees whose salary is greater than 50000
+
+mysql> SELECT e.Emp_name, d.Dept_name, e.Emp_city
+    -> FROM emp e
+    -> INNER JOIN dept d ON e.Dept_no = d.Dept_no
+    -> WHERE e.Emp_salary > 50000;
++----------+-----------+-------------+
+| Emp_name | Dept_name | Emp_city    |
++----------+-----------+-------------+
+| Alice    | HR        | New York    |
+| Bob      | Finance   | London      |
+| Charlie  | Marketing | Los Angeles |
++----------+-----------+-------------+
+
+-- Query 4: Display department_number and dept_manager of employees whose city is Pune
+
+mysql> SELECT e.Dept_no, d.Dept_manager
+    -> FROM emp e
+    -> INNER JOIN dept d ON e.Dept_no = d.Dept_no
+    -> WHERE e.Emp_city = 'Pune';
+Empty set (0.00 sec)
+
+mysql> SELECT e.Dept_no, d.Dept_manager
+    -> FROM emp e
+    -> INNER JOIN dept d ON e.Dept_no = d.Dept_no
+    -> WHERE e.Emp_city = 'London';
++---------+--------------+
+| Dept_no | Dept_manager |
++---------+--------------+
+|    1002 | Jane         |
++---------+--------------+
+
+-- Query 5: Full outer join between Employee and Department table
+
+SELECT *
+FROM EMP
+FULL OUTER JOIN DEPT ON EMP.Dept_no = DEPT.Dept_no;
+
+OR
+
+mysql> SELECT *
+    -> FROM emp e
+    -> LEFT JOIN dept d ON e.Dept_no = d.Dept_no
+    -> UNION
+    -> SELECT *
+    -> FROM emp e
+    -> RIGHT JOIN dept d ON e.Dept_no = d.Dept_no
+    -> WHERE e.Dept_no IS NULL;
++--------+----------+-------------+----------+------------+------------+---------+---------+------------+--------------+---------------+
+| Emp_no | Emp_name | Emp_city    | Emp_dept | Emp_post   | Emp_salary | Dept_no | Dept_no | Dept_name  | Dept_manager | Dept_location |
++--------+----------+-------------+----------+------------+------------+---------+---------+------------+--------------+---------------+
+|    101 | Alice    | New York    | HR       | Recruiter  |      60000 |    1001 |    1001 | HR         | John         | A-wing        |
+|    102 | Bob      | London      | IT       | Developer  |      55000 |    1002 |    1002 | Finance    | Jane         | B-wing        |
+|    103 | Charlie  | Los Angeles | Finance  | Accountant |      65000 |    1003 |    1003 | Marketing  | Michael      | C-wing        |
+|   NULL | NULL     | NULL        | NULL     | NULL       |       NULL |    NULL |    1004 | IT         | Emily        | D-wing        |
+|   NULL | NULL     | NULL        | NULL     | NULL       |       NULL |    NULL |    1005 | Operations | David        | E-wing        |
++--------+----------+-------------+----------+------------+------------+---------+---------+------------+--------------+---------------+
+
+
+-- Query 6: Right outer join between Employee and Department table. Display only Emp_no, Emp_name, Dept_no, and Dept_name.
+
+mysql> SELECT e.Emp_no, e.Emp_name, d.Dept_no, d.Dept_name
+    -> FROM emp e
+    -> RIGHT OUTER JOIN dept d ON e.Dept_no = d.Dept_no;
++--------+----------+---------+------------+
+| Emp_no | Emp_name | Dept_no | Dept_name  |
++--------+----------+---------+------------+
+|    101 | Alice    |    1001 | HR         |
+|    102 | Bob      |    1002 | Finance    |
+|    103 | Charlie  |    1003 | Marketing  |
+|   NULL | NULL     |    1004 | IT         |
+|   NULL | NULL     |    1005 | Operations |
++--------+----------+---------+------------+
+
