@@ -59,7 +59,7 @@ mysql> SELECT c.cust_id, c.cust_name, SUM(b.order_amount) AS total_order_amount
 +---------+-----------+--------------------+
 |       1 | John      |               5000 |
 +---------+-----------+--------------------+
-1 row in set (0.02 sec)
+OR
 
 mysql> SELECT C.CUST_ID, C.CUST_NAME
     -> FROM CUSTOMER C
@@ -74,4 +74,16 @@ mysql> SELECT C.CUST_ID, C.CUST_NAME
 +---------+-----------+
 |       1 | John      |
 +---------+-----------+
-1 row in set (0.02 sec)
+OR
+
+mysql> SELECT *
+    -> FROM customer
+    -> WHERE cust_id IN
+    -> (SELECT cust_id
+    -> FROM book
+    -> WHERE order_amount > 3400);
++---------+-----------+-----------+
+| cust_id | cust_name | cust_city |
++---------+-----------+-----------+
+|       1 | John      | Mumbai    |
++---------+-----------+-----------+
