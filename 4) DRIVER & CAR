@@ -104,6 +104,8 @@ mysql> SELECT * FROM car
 | MH-15-5678 |         5 | Maruti  |              2010 |
 +------------+-----------+---------+-------------------+
 
+--Write a procedure on above CAR table to display car models whose Regn. Year is 2020 and driver
+name is "Amol"
 
 mysql> DELIMITER //
 mysql> CREATE PROCEDURE get_data()
