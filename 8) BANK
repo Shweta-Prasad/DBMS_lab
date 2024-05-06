@@ -31,21 +31,28 @@ mysql> INSERT INTO Customer
     -> VALUES
     -> (1, 'John', '123 Main Street', 'Nashik'),
     -> (2, 'Jane', '345 Street', 'Pune'),
-    -> (3, 'Alice', '456 Street', 'Mumbai');
+    -> (3, 'Alice', '456 Street', 'Mumbai'),
+    -> (4, 'Mican', '11 Street', 'Nashik'),
+    -> (5, 'Ichan', '10 Street', 'Nashik'),
+    -> (6, 'Naine', '303 Street', 'Mumbai');
 
 mysql> INSERT INTO Branch
     -> VALUES
     -> (101, 'Main Branch', 'Nashik', 500000),
     -> (102, 'Central Branch', 'Pune', 400000),
-    -> (103, 'Downtown Branch', 'Mumbai', 600000);
+    -> (103, 'Downtown Branch', 'Mumbai', 280000);
 
 mysql> INSERT INTO Account
     -> VALUES
-    -> (1234, 1, 101, 2500),
-    -> (4567, 2, 102, 3500),
-    -> (6789, 3, 103, 2000);
+    -> (1001, 1, 101, 2500),
+    -> (1002, 2, 102, 3500),
+    -> (2001, 3, 103, 2000),
+    -> (2002, 4, 101, 800),
+    -> (2003, 5, 102, 1500),
+    -> (1003, 6, 103, 100);
 
---1.Select customer details of those customers whose city is Nasik.
+--1. Select customer details of those customers whose city is Nasik.
+
 mysql> SELECT *
     -> FROM Customer
     -> WHERE city = 'Nashik';
@@ -53,6 +60,156 @@ mysql> SELECT *
 | customer_id | customer_name | customer_street | city   |
 +-------------+---------------+-----------------+--------+
 |           1 | John          | 123 Main Street | Nashik |
+|           4 | Mican         | 11 Street       | Nashik |
+|           5 | Ichan         | 10 Street       | Nashik |
 +-------------+---------------+-----------------+--------+
 
+--2. Display details of branches whose assets are more than 300000 or whose city is Pune.
 
+mysql> SELECT *
+    -> FROM branch
+    -> WHERE assets > 300000 OR branch_city = 'Pune';
++-----------+----------------+-------------+--------+
+| branch_id | branch_name    | branch_city | assets |
++-----------+----------------+-------------+--------+
+|       101 | Main Branch    | Nashik      | 500000 |
+|       102 | Central Branch | Pune        | 400000 |
++-----------+----------------+-------------+--------+
+
+--3. Display details of branches whose assets are more than 300000 and whose city is Nasik.
+
+mysql> SELECT *
+    -> FROM branch
+    -> WHERE assets > 300000 OR branch_city = 'Nashik';
++-----------+----------------+-------------+--------+
+| branch_id | branch_name    | branch_city | assets |
++-----------+----------------+-------------+--------+
+|       101 | Main Branch    | Nashik      | 500000 |
+|       102 | Central Branch | Pune        | 400000 |
++-----------+----------------+-------------+--------+
+
+--4. Display details of accounts from branch Nasik in ascending/descending order of balance.
+
+mysql> SELECT *
+    -> FROM account
+    -> WHERE branch_id IN (SELECT branch_id FROM branch WHERE branch_city =
+'Nashik')
+    -> ORDER BY balance ASC;  -- or DESC for descending order
++--------+-------------+-----------+---------+
+| acc_no | customer_id | branch_id | balance |
++--------+-------------+-----------+---------+
+|   2002 |           4 |       101 |     800 |
+|   1001 |           1 |       101 |    2500 |
++--------+-------------+-----------+---------+
+
+mysql> SELECT *
+    -> FROM account
+    -> WHERE branch_id IN (SELECT branch_id FROM branch WHERE branch_city = 'Nashik')
+    -> ORDER BY balance DESC;
++--------+-------------+-----------+---------+
+| acc_no | customer_id | branch_id | balance |
++--------+-------------+-----------+---------+
+|   1001 |           1 |       101 |    2500 |
+|   2002 |           4 |       101 |     800 |
++--------+-------------+-----------+---------+
+
+--5. Increase balance of customers by 30% whose balance is less than 1000.
+
+mysql> UPDATE account
+    -> SET balance = balance * 1.3
+    -> WHERE balance < 1000;
+
+mysql> SELECT * FROM account;
++--------+-------------+-----------+---------+
+| acc_no | customer_id | branch_id | balance |
++--------+-------------+-----------+---------+
+|   1001 |           1 |       101 |    2500 |
+|   1002 |           2 |       102 |    3500 |
+|   1003 |           6 |       103 |     130 |
+|   2001 |           3 |       103 |    2000 |
+|   2002 |           4 |       101 |    1040 |
+|   2003 |           5 |       102 |    1500 |
++--------+-------------+-----------+---------+
+
+--6. Delete accounts of those customers whose balance is between 1500 and 3000.
+
+mysql> DELETE FROM account
+    -> WHERE balance BETWEEN 1500 AND 3000;
+
+mysql> SELECT * FROM account;
++--------+-------------+-----------+---------+
+| acc_no | customer_id | branch_id | balance |
++--------+-------------+-----------+---------+
+|   1002 |           2 |       102 |    3500 |
+|   1003 |           6 |       103 |     130 |
+|   2002 |           4 |       101 |    1040 |
++--------+-------------+-----------+---------+
+
+--7. Find out distinct customer names from the city Nasik.
+
+mysql> SELECT DISTINCT customer_name
+    -> FROM Customer
+    -> WHERE city = 'Nashik';
++---------------+
+| customer_name |
++---------------+
+| John          |
+| Mican         |
+| Ichan         |
++---------------+
+
+--8. Update city of customers whose name is "xyz" to Mumbai.
+
+mysql> UPDATE customer
+    -> SET city = 'Mumbai'
+    -> WHERE customer_name = 'Ichan';
+
+mysql> SELECT * FROM customer;
++-------------+---------------+-----------------+--------+
+| customer_id | customer_name | customer_street | city   |
++-------------+---------------+-----------------+--------+
+|           1 | John          | 123 Main Street | Nashik |
+|           2 | Jane          | 345 Street      | Pune   |
+|           3 | Alice         | 456 Street      | Mumbai |
+|           4 | Mican         | 11 Street       | Nashik |
+|           5 | Ichan         | 10 Street       | Mumbai |
+|           6 | Naine         | 303 Street      | Mumbai |
++-------------+---------------+-----------------+--------+
+
+--9. Remove account collection.
+
+mysql> DELETE FROM account;
+Query OK, 3 rows affected (0.00 sec)
+
+mysql> SELECT * FROM account;
+Empty set (0.00 sec)
+
+-- Write and execute database trigger to check opening balance of every account to be set to ateast 2000/-. Consider row level and statement level triggers.
+
+mysql> DELIMITER //
+mysql> CREATE TRIGGER set_min_opening_balance
+    -> BEFORE INSERT ON account
+    -> FOR EACH ROW
+    -> BEGIN
+    ->  IF NEW.balance < 2000 THEN
+    ->          SET NEW.balance = 2000;
+    ->  END IF;
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER;
+
+mysql> INSERT INTO account
+    -> VALUES (1004, 2, 102, 1500);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT * FROM account;
++--------+-------------+-----------+---------+
+| acc_no | customer_id | branch_id | balance |
++--------+-------------+-----------+---------+
+|   1004 |           2 |       102 |    2000 |
++--------+-------------+-----------+---------+
+
+-- After insertion, the trigger will automatically set the balance to 2000 if it was less than 2000
+-- So the balance of the inserted row will become 2000
