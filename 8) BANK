@@ -51,7 +51,7 @@ mysql> INSERT INTO Account
     -> (2003, 5, 102, 1500),
     -> (1003, 6, 103, 100);
 
---1. Select customer details of those customers whose city is Nasik.
+-- Query 1: Select customer details of those customers whose city is Nasik.
 
 mysql> SELECT *
     -> FROM Customer
@@ -64,7 +64,7 @@ mysql> SELECT *
 |           5 | Ichan         | 10 Street       | Nashik |
 +-------------+---------------+-----------------+--------+
 
---2. Display details of branches whose assets are more than 300000 or whose city is Pune.
+-- Query 2: Display details of branches whose assets are more than 300000 or whose city is Pune.
 
 mysql> SELECT *
     -> FROM branch
@@ -76,7 +76,7 @@ mysql> SELECT *
 |       102 | Central Branch | Pune        | 400000 |
 +-----------+----------------+-------------+--------+
 
---3. Display details of branches whose assets are more than 300000 and whose city is Nasik.
+-- Query 3: Display details of branches whose assets are more than 300000 and whose city is Nasik.
 
 mysql> SELECT *
     -> FROM branch
@@ -88,7 +88,7 @@ mysql> SELECT *
 |       102 | Central Branch | Pune        | 400000 |
 +-----------+----------------+-------------+--------+
 
---4. Display details of accounts from branch Nasik in ascending/descending order of balance.
+-- Query 4: Display details of accounts from branch Nasik in ascending/descending order of balance.
 
 mysql> SELECT *
     -> FROM account
@@ -113,7 +113,7 @@ mysql> SELECT *
 |   2002 |           4 |       101 |     800 |
 +--------+-------------+-----------+---------+
 
---5. Increase balance of customers by 30% whose balance is less than 1000.
+-- Query 5: Increase balance of customers by 30% whose balance is less than 1000.
 
 mysql> UPDATE account
     -> SET balance = balance * 1.3
@@ -131,7 +131,7 @@ mysql> SELECT * FROM account;
 |   2003 |           5 |       102 |    1500 |
 +--------+-------------+-----------+---------+
 
---6. Delete accounts of those customers whose balance is between 1500 and 3000.
+-- Query 6: Delete accounts of those customers whose balance is between 1500 and 3000.
 
 mysql> DELETE FROM account
     -> WHERE balance BETWEEN 1500 AND 3000;
@@ -145,7 +145,7 @@ mysql> SELECT * FROM account;
 |   2002 |           4 |       101 |    1040 |
 +--------+-------------+-----------+---------+
 
---7. Find out distinct customer names from the city Nasik.
+-- Query 7: Find out distinct customer names from the city Nasik.
 
 mysql> SELECT DISTINCT customer_name
     -> FROM Customer
@@ -158,7 +158,7 @@ mysql> SELECT DISTINCT customer_name
 | Ichan         |
 +---------------+
 
---8. Update city of customers whose name is "xyz" to Mumbai.
+-- Query 8: Update city of customers whose name is "xyz" to Mumbai.
 
 mysql> UPDATE customer
     -> SET city = 'Mumbai'
@@ -176,7 +176,7 @@ mysql> SELECT * FROM customer;
 |           6 | Naine         | 303 Street      | Mumbai |
 +-------------+---------------+-----------------+--------+
 
---9. Remove account collection.
+-- Query 9: Remove account collection.
 
 mysql> DELETE FROM account;
 Query OK, 3 rows affected (0.00 sec)
