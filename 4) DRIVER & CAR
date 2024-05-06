@@ -74,10 +74,6 @@ mysql> DELETE FROM car
 
 -- Query 5: Display count of drivers from Nasik city
 
-mysql> DELETE FROM car WHERE driver_id = 13;
-
--- Query 6: Display records of all cars whose CAR_NO starts with 'MH-15'
-
 mysql> SELECT COUNT(*) FROM driver
     -> WHERE driver_city = 'Nashik';
 +----------+
