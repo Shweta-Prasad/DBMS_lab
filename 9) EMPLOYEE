@@ -1,0 +1,137 @@
+mysql> CREATE DATABASE employee;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> USE employee;
+Database changed
+
+mysql> CREATE TABLE employee (
+    -> emp_id INT PRIMARY KEY,
+    -> emp_name VARCHAR(50),
+    -> emp_city VARCHAR(50),
+    -> emp_post VARCHAR(50),
+    -> emp_salary INT );
+
+mysql> INSERT INTO employee
+    -> VALUES
+    -> (1, 'John', 'Nasik', 'Manager', 12000),
+    -> (2, 'Jane', 'Pune', 'Engineer', 15000),
+    -> (3, 'Alice', 'Nasik', 'Analyst', 11000),
+    -> (4, 'Bob', 'Mumbai', 'Developer', 13000),
+    -> (5, 'Emily', 'Nasik', 'Designer', 10500),
+    -> (6, 'David', 'Pune', 'Manager', 18000),
+    -> (7, 'Sarah', 'Mumbai', 'Engineer', 14000),
+    -> (8, 'Michael', 'Nasik', 'Analyst', 11500);
+
+-- Query 1: Display only id, name, and city of employee.
+
+mysql> SELECT emp_id, emp_name, emp_city
+    -> FROM employee;
++--------+----------+----------+
+| emp_id | emp_name | emp_city |
++--------+----------+----------+
+|      1 | John     | Nasik    |
+|      2 | Jane     | Pune     |
+|      3 | Alice    | Nasik    |
+|      4 | Bob      | Mumbai   |
+|      5 | Emily    | Nasik    |
+|      6 | David    | Pune     |
+|      7 | Sarah    | Mumbai   |
+|      8 | Michael  | Nasik    |
++--------+----------+----------+
+
+-- Query 2: Display only id and salary of employee whose salary is greater than 10000.
+
+mysql> SELECT emp_id, emp_salary
+    -> FROM employee
+    -> WHERE emp_salary > 10000;
++--------+------------+
+| emp_id | emp_salary |
++--------+------------+
+|      1 |      12000 |
+|      2 |      15000 |
+|      3 |      11000 |
+|      4 |      13000 |
+|      5 |      10500 |
+|      6 |      18000 |
+|      7 |      14000 |
+|      8 |      11500 |
++--------+------------+
+
+-- Query 3: Display employee name from Nasik city and sort it by considering their names.
+
+mysql> SELECT emp_name
+    -> FROM employee
+    -> WHERE emp_city = 'Nasik'
+    -> ORDER BY emp_name;
++----------+
+| emp_name |
++----------+
+| Alice    |
+| Emily    |
+| John     |
+| Michael  |
++----------+
+
+-- Query 4: Display employee’s id and name with maximum salary.
+
+mysql> SELECT emp_id, emp_name
+    -> FROM employee
+    -> WHERE emp_salary = (SELECT MAX(emp_salary) FROM employee);
++--------+----------+
+| emp_id | emp_name |
++--------+----------+
+|      6 | David    |
++--------+----------+
+
+-- Query 5: Display the emp_id field of an employee.
+
+mysql> SELECT emp_id
+    -> FROM employee;
++--------+
+| emp_id |
++--------+
+|      1 |
+|      2 |
+|      3 |
+|      4 |
+|      5 |
+|      6 |
+|      7 |
+|      8 |
++--------+
+
+-- write a PL/SQL block to implement procedure for displaying employee details with highest salary, post of the particular employee.
+
+DELIMITER //
+
+CREATE PROCEDURE GetEmployeeDetails(IN empId INT)
+BEGIN
+    DECLARE v_emp_name VARCHAR(255);
+    DECLARE v_emp_post VARCHAR(255);
+    DECLARE v_max_salary DECIMAL(10, 2);
+
+    -- Retrieve employee name and post
+    SELECT emp_name, emp_post INTO v_emp_name, v_emp_post
+    FROM Employee
+    WHERE emp_id = empId;
+
+    -- Retrieve maximum salary
+    SELECT MAX(emp_salary) INTO v_max_salary
+    FROM Employee;
+
+    -- Display employee details with the highest salary and post
+    SELECT CONCAT('Employee ID: ', empId) AS 'Employee ID',
+           CONCAT('Employee Name: ', v_emp_name) AS 'Employee Name',
+           CONCAT('Employee Post: ', v_emp_post) AS 'Employee Post',
+           CONCAT('Highest Salary: ', v_max_salary) AS 'Highest Salary';
+END //
+
+DELIMITER ;
+
+mysql> CALL GetEmployeeDetails(1);
++----------------+---------------------+------------------------+--------------------------+
+| Employee ID    | Employee Name       | Employee Post          | Highest Salary           |
++----------------+---------------------+------------------------+--------------------------+
+| Employee ID: 1 | Employee Name: John | Employee Post: Manager | Highest Salary: 18000.00 |
++----------------+---------------------+------------------------+--------------------------+
+
