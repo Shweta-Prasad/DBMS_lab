@@ -104,7 +104,33 @@ mysql> SELECT * FROM car
 | MH-15-5678 |         5 | Maruti  |              2010 |
 +------------+-----------+---------+-------------------+
 
+--Find Driver names with Car model and Car NO he is running and group by Regn. No.
+
+SELECT c.regn_no,
+       d.driver_name,
+       c.model,
+       c.car_no
+FROM car c
+JOIN driver d ON c.driver_id = d.driver_id
+GROUP BY c.regn_no;
+
+
+
 --Write a procedure on above CAR table to display car models whose Regn. Year is 2020 and driver name is "Amol"
+
+DELIMITER //
+
+CREATE PROCEDURE get_car_data()
+BEGIN
+    SELECT c.model
+    FROM car c
+    JOIN driver d ON c.driver_id = d.driver_id
+    WHERE c.registration_year = 2020 AND d.driver_name = 'Amol';
+END //
+
+DELIMITER ;
+
+OR
 
 mysql> DELIMITER //
 mysql> CREATE PROCEDURE get_data()
